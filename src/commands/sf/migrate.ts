@@ -130,7 +130,7 @@ export default class Migrate extends Command {
 
     const optionalDevLibs = ['@types/node']
 
-    const prodLibs = ['@oclif/core', 'chalk', 'inquirer', 'got']
+    const prodLibs = ['@oclif/core', 'chalk', 'inquirer', 'got', '@salesforce/sf-plugins-core']
 
     const removeLibs = ['tslib']
 
