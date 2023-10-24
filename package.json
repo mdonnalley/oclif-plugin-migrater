@@ -16,7 +16,7 @@
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^3",
     "@types/chai": "^4",
-    "@types/lodash.clonedeep": "^4.5.7",
+    "@types/lodash.clonedeep": "^4.5.8",
     "@types/mocha": "^10",
     "@types/node": "^18",
     "chai": "^4",
