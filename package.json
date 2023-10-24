@@ -6,7 +6,7 @@
   "dependencies": {
     "@oclif/core": "^3",
     "@oclif/plugin-help": "^5",
-    "@oclif/plugin-plugins": "^3.7.0",
+    "@oclif/plugin-plugins": "^3.9.4",
     "chalk": "^5.3.0",
     "lodash.clonedeep": "^4.5.0",
     "sort-pjson": "^1.0.3"
