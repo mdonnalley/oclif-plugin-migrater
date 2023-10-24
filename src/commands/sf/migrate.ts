@@ -102,10 +102,6 @@ export default class Migrate extends Command {
 
   private async updateGitIgnore() {
     let gitIgnore = await readFile('.gitignore', 'utf8')
-    // const lines = gitIgnore.split('\n')
-    // lines.push('oclif.lock', 'oclif.manifest.json')
-    // const deduped = dedupe(lines)
-    // log('.gitignore', 'added', 'oclif.lock', 'oclif.manifest.json')
     await writeFile('.gitignore', (gitIgnore += '\noclif.lock\n'))
   }
 
@@ -176,7 +172,7 @@ export default class Migrate extends Command {
       log(scope, 'removed', lib)
     }
 
-    pjson.devDependencies!['@salesforce/dev-config'] = '^4.0.2-dev.0'
+    pjson.devDependencies!['@salesforce/dev-config'] = '^4.0.2-dev.1'
 
     if (pjson.oclif.commands) {
       pjson.oclif.flexibleTaxonomy = true
