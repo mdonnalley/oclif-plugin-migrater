@@ -129,7 +129,14 @@ export default class Migrate extends Command {
 
     log(scope, 'updated', 'bin')
 
-    const devLibs = ['oclif', 'ts-node', 'typescript', '@salesforce/dev-scripts']
+    const devLibs = [
+      '@oclif/dev-config',
+      '@oclif/plugin-command-snapshot',
+      '@salesforce/dev-scripts',
+      'oclif',
+      'ts-node',
+      'typescript',
+    ]
 
     // const optionalDevLibs = []
 
@@ -175,7 +182,6 @@ export default class Migrate extends Command {
       log(scope, 'removed', lib)
     }
 
-    pjson.devDependencies!['@salesforce/dev-config'] = '^4.0.2-dev.1'
     pjson.devDependencies!['eslint-config-salesforce-typescript'] = '^2.0.0-dev.1'
 
     log(scope, 'added', '@salesforce/dev-config@^4.0.2-dev.1')
