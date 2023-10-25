@@ -79,7 +79,8 @@ export default class Migrate extends Command {
     this.log('• Update imports to include .js extension')
     this.log('• Remove uses of __dirname')
     this.log('• Remove uses of require()')
-    this.log('• Update fancy tests to new stubbing style')
+    this.log('• Use node protocol for imports (e.g. node:fs)')
+    this.log('• Update references to bin/dev to bin/dev.js')
   }
 
   private async updateBinScripts() {
@@ -173,6 +174,10 @@ export default class Migrate extends Command {
     }
 
     pjson.devDependencies!['@salesforce/dev-config'] = '^4.0.2-dev.1'
+    pjson.devDependencies!['eslint-config-salesforce-typescript'] = '^2.0.0-dev.1'
+
+    log(scope, 'added', '@salesforce/dev-config@^4.0.2-dev.1')
+    log(scope, 'added', 'eslint-config-salesforce-typescript@^2.0.0-dev.1')
 
     if (pjson.oclif.commands) {
       pjson.oclif.flexibleTaxonomy = true
