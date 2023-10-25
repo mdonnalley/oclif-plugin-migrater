@@ -64,23 +64,25 @@ export default class Migrate extends Command {
   public async run(): Promise<void> {
     const tsConfig = await this.updateTsConfig()
     await this.updatePackageJson(tsConfig)
-
-    await exec('yarn')
-
     await this.updateGitIgnore()
     await this.updateTestStuff()
     await this.updateBinScripts()
 
+    await exec('yarn')
+
     await rename('.lintstagedrc.js', '.lintstagedrc.cjs')
     await rename('commitlint.config.js', 'commitlint.config.cjs')
+
+    log('config', 'updated', 'lintstagedrc.js to lintstagedrc.cjs')
+    log('config', 'updated', 'commitlint.config.js to commitlint.config.cjs')
 
     this.log(`${chalk.green.bold('SUCCESS')}\n`)
     this.log(`${chalk.bold('TODO')}:`)
     this.log('• Update imports to include .js extension')
     this.log('• Remove uses of __dirname')
     this.log('• Remove uses of require()')
-    this.log('• Use node protocol for imports (e.g. node:fs)')
     this.log('• Update references to bin/dev to bin/dev.js')
+    this.log('• Run yarn lint --fix')
   }
 
   private async updateBinScripts() {
@@ -127,9 +129,9 @@ export default class Migrate extends Command {
 
     log(scope, 'updated', 'bin')
 
-    const devLibs = ['oclif', 'ts-node', 'typescript']
+    const devLibs = ['oclif', 'ts-node', 'typescript', '@salesforce/dev-scripts']
 
-    const optionalDevLibs = ['@types/node']
+    // const optionalDevLibs = []
 
     const prodLibs = ['@oclif/core', 'chalk', 'inquirer', 'got', '@salesforce/sf-plugins-core']
 
@@ -142,20 +144,20 @@ export default class Migrate extends Command {
       log(scope, 'added', `${lib}@${version}`)
     }
 
-    for (const lib of optionalDevLibs) {
-      if (pjson.devDependencies![lib]) {
-        if (lib === '@types/node') {
-          log(scope, 'added', `${lib}@^18`)
-          pjson.devDependencies![lib] = '^18'
-          continue
-        }
+    // for (const lib of optionalDevLibs) {
+    //   if (pjson.devDependencies![lib]) {
+    //     if (lib === '@types/node') {
+    //       log(scope, 'added', `${lib}@^18`)
+    //       pjson.devDependencies![lib] = '^18'
+    //       continue
+    //     }
 
-        const distTags = await exec(`npm view ${lib} dist-tags --json`)
-        const version = `^${JSON.parse(distTags.stdout).latest}`
-        log(scope, 'added', `${lib}@${version}`)
-        pjson.devDependencies![lib] = version
-      }
-    }
+    //     const distTags = await exec(`npm view ${lib} dist-tags --json`)
+    //     const version = `^${JSON.parse(distTags.stdout).latest}`
+    //     log(scope, 'added', `${lib}@${version}`)
+    //     pjson.devDependencies![lib] = version
+    //   }
+    // }
 
     for (const lib of prodLibs) {
       if (pjson.dependencies![lib]) {
