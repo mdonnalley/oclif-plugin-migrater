@@ -2,7 +2,7 @@
 import {Command, Interfaces, ux} from '@oclif/core'
 import chalk from 'chalk'
 import {exec as cpExec} from 'node:child_process'
-import {cp, readFile, rename, rm, writeFile} from 'node:fs/promises'
+import {cp, readFile, readdir, rename, rm, writeFile} from 'node:fs/promises'
 import {dirname, join, resolve} from 'node:path'
 import {fileURLToPath} from 'node:url'
 
@@ -221,6 +221,16 @@ export default class Migrate extends Command {
     tsConfig.extends = '@salesforce/dev-config/tsconfig-test-strict-esm'
 
     await writeJSON(join('test', 'tsconfig.json'), tsConfig)
+
+    try {
+      await rm(join('test', 'helpers', 'init.js'), {force: true, recursive: true})
+      log('test', 'removed', join('helpers', 'init.js'))
+
+      const files = await readdir(join('test', 'helpers'))
+      if (files.length === 0) {
+        await rm(join('test', 'helpers'), {force: true, recursive: true})
+      }
+    } catch {}
   }
 
   private async updateTsConfig(): Promise<Interfaces.TSConfig> {
