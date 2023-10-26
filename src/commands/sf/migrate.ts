@@ -136,6 +136,7 @@ export default class Migrate extends Command {
       'oclif',
       'ts-node',
       'typescript',
+      'eslint-config-salesforce-typescript',
     ]
 
     // const optionalDevLibs = []
@@ -181,11 +182,6 @@ export default class Migrate extends Command {
       delete pjson.devDependencies![lib]
       log(scope, 'removed', lib)
     }
-
-    pjson.devDependencies!['eslint-config-salesforce-typescript'] = '^2.0.0-dev.1'
-
-    log(scope, 'added', '@salesforce/dev-config@^4.0.2-dev.1')
-    log(scope, 'added', 'eslint-config-salesforce-typescript@^2.0.0-dev.1')
 
     if (pjson.oclif.commands) {
       pjson.oclif.flexibleTaxonomy = true
