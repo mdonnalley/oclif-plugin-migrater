@@ -130,16 +130,16 @@ export default class Migrate extends Command {
     log(scope, 'updated', 'bin')
 
     const devLibs = [
-      '@salesforce/dev-config',
       '@oclif/plugin-command-snapshot',
+      '@salesforce/dev-config',
       '@salesforce/dev-scripts',
+      'eslint-config-salesforce-typescript',
       'oclif',
       'ts-node',
       'typescript',
-      'eslint-config-salesforce-typescript',
     ]
 
-    // const optionalDevLibs = []
+    const optionalDevLibs = ['@oclif/plugin-help']
 
     const prodLibs = ['@oclif/core', 'chalk', 'inquirer', 'got', '@salesforce/sf-plugins-core']
 
@@ -152,20 +152,20 @@ export default class Migrate extends Command {
       log(scope, 'added', `${lib}@${version}`)
     }
 
-    // for (const lib of optionalDevLibs) {
-    //   if (pjson.devDependencies![lib]) {
-    //     if (lib === '@types/node') {
-    //       log(scope, 'added', `${lib}@^18`)
-    //       pjson.devDependencies![lib] = '^18'
-    //       continue
-    //     }
+    for (const lib of optionalDevLibs) {
+      if (pjson.devDependencies![lib]) {
+        if (lib === '@types/node') {
+          log(scope, 'added', `${lib}@^18`)
+          pjson.devDependencies![lib] = '^18'
+          continue
+        }
 
-    //     const distTags = await exec(`npm view ${lib} dist-tags --json`)
-    //     const version = `^${JSON.parse(distTags.stdout).latest}`
-    //     log(scope, 'added', `${lib}@${version}`)
-    //     pjson.devDependencies![lib] = version
-    //   }
-    // }
+        const distTags = await exec(`npm view ${lib} dist-tags --json`)
+        const version = `^${JSON.parse(distTags.stdout).latest}`
+        log(scope, 'added', `${lib}@${version}`)
+        pjson.devDependencies![lib] = version
+      }
+    }
 
     for (const lib of prodLibs) {
       if (pjson.dependencies![lib]) {
