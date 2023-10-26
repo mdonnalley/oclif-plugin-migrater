@@ -68,7 +68,11 @@ export default class Migrate extends Command {
     await this.updateTestStuff()
     await this.updateBinScripts()
 
-    await exec('yarn')
+    try {
+      await exec('yarn')
+    } catch {
+      await exec('yarn install')
+    }
 
     await rename('.lintstagedrc.js', '.lintstagedrc.cjs')
     await rename('commitlint.config.js', 'commitlint.config.cjs')
