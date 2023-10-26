@@ -143,7 +143,7 @@ export default class Migrate extends Command {
       'typescript',
     ]
 
-    const optionalDevLibs = ['@oclif/plugin-help']
+    const optionalDevLibs = ['@oclif/plugin-help', '@oclif/test']
 
     const prodLibs = ['@oclif/core', 'chalk', 'inquirer', 'got', '@salesforce/sf-plugins-core']
 
