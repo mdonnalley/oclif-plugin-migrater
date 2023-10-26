@@ -130,7 +130,7 @@ export default class Migrate extends Command {
     log(scope, 'updated', 'bin')
 
     const devLibs = [
-      '@oclif/dev-config',
+      '@salesforce/dev-config',
       '@oclif/plugin-command-snapshot',
       '@salesforce/dev-scripts',
       'oclif',
