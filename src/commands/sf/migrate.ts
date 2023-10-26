@@ -87,6 +87,7 @@ export default class Migrate extends Command {
     this.log('• Remove uses of require()')
     this.log('• Update references to bin/dev to bin/dev.js')
     this.log('• Run yarn lint --fix')
+    this.log('• Add oclif.lock to clean up related scripts')
   }
 
   private async updateBinScripts() {
