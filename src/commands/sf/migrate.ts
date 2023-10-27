@@ -67,6 +67,7 @@ export default class Migrate extends Command {
     await this.updateGitIgnore()
     await this.updateTestStuff()
     await this.updateBinScripts()
+    await this.addEslintIgnore()
 
     try {
       await exec('yarn')
@@ -88,6 +89,21 @@ export default class Migrate extends Command {
     this.log('• Update references to bin/dev to bin/dev.js')
     this.log('• Run yarn lint --fix')
     this.log('• Add oclif.lock to clean up related scripts')
+  }
+
+  private async addEslintIgnore() {
+    let contents: string | undefined
+    let action: 'added' | 'updated'
+    try {
+      contents = await readFile('.eslintignore', 'utf8')
+      action = 'updated'
+    } catch {
+      contents = ''
+      action = 'added'
+    }
+
+    await writeFile('.eslintignore', (contents += '*.cjs/\n'))
+    log('.eslintignore', action, '*.cjs/')
   }
 
   private async updateBinScripts() {
