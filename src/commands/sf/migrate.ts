@@ -225,7 +225,7 @@ export default class Migrate extends Command {
     log(scope, 'updated', 'oclif.lock to files')
     log(scope, 'updated', 'engines.node to >=18.0.0')
 
-    pjson.keywords = [...new Set([...(pjson.keywords ?? []), 'sf', 'sf-plugin'])]
+    pjson.keywords = [...new Set([...(pjson.keywords ?? []), 'sf', 'sf-plugin'])].sort()
     log(scope, 'updated', 'keywords')
 
     if (pjson.oclif.bin) {
