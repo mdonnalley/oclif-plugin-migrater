@@ -164,7 +164,7 @@ export default class Migrate extends Command {
 
     const prodLibs = ['@oclif/core', 'chalk', 'inquirer', 'got', '@salesforce/sf-plugins-core']
 
-    const removeLibs = ['tslib']
+    const removeLibs = ['tslib', '@swc/core']
 
     for (const lib of devLibs) {
       const distTags = await exec(`npm view ${lib} dist-tags --json`)
@@ -222,6 +222,16 @@ export default class Migrate extends Command {
 
     log(scope, 'updated', 'oclif.lock to files')
     log(scope, 'updated', 'engines.node to >=18.0.0')
+
+    pjson.keywords = [...new Set([...(pjson.keywords ?? []), 'sf', 'sf-plugin'])]
+    log(scope, 'updated', 'keywords')
+
+    if (pjson.oclif.bin) {
+      pjson.oclif.bin = 'sf'
+    }
+
+    log(scope, 'updated', 'oclif.bin')
+
     await writeJSON('package.json', pjson)
     return pjson
   }
