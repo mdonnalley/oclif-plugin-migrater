@@ -164,7 +164,7 @@ export default class Migrate extends Command {
 
     const prodLibs = ['@oclif/core', 'chalk', 'inquirer', 'got', '@salesforce/sf-plugins-core']
 
-    const removeLibs = ['tslib', 'swc']
+    const removeLibs = ['tslib', 'swc', '@swc/core']
 
     for (const lib of devLibs) {
       const distTags = await exec(`npm view ${lib} dist-tags --json`)
