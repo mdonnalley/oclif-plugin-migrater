@@ -164,7 +164,7 @@ export default class Migrate extends Command {
 
     const prodLibs = ['@oclif/core', 'chalk', 'inquirer', 'got', '@salesforce/sf-plugins-core']
 
-    const removeLibs = ['tslib', '@swc/core']
+    const removeLibs = ['tslib', 'swc']
 
     for (const lib of devLibs) {
       const distTags = await exec(`npm view ${lib} dist-tags --json`)
@@ -203,6 +203,8 @@ export default class Migrate extends Command {
       delete pjson.devDependencies![lib]
       log(scope, 'removed', lib)
     }
+
+    pjson.devDependencies!['@salesforce/cli-plugins-testkit'] = '^5.0.0-dev.1'
 
     if (pjson.oclif.commands) {
       pjson.oclif.flexibleTaxonomy = true
