@@ -133,6 +133,12 @@ export default class Migrate extends Command {
     const scope = 'package.json'
     const pjson = await readJSON<Interfaces.PJSON.Plugin>('package.json')
 
+    const {stdout: version} = await exec(`npm show ${pjson.name} version --json`)
+    const currentMajor = version.split('.')[0]
+
+    pjson.version = `${currentMajor + 1}.0.0`
+    log(scope, 'updated', `version: ${pjson.version}`)
+
     delete pjson.main
     log(scope, 'removed', 'main')
     pjson.exports = `./${tsConfig.compilerOptions.outDir?.replace('./', '') ?? 'lib'}/index.js`
