@@ -166,7 +166,7 @@ export default class Migrate extends Command {
       'typescript',
     ]
 
-    const optionalDevLibs = ['@oclif/plugin-help', '@oclif/test']
+    const optionalDevLibs = ['@oclif/plugin-help', '@oclif/test', '@salesforce/cli-plugins-testkit']
 
     const prodLibs = ['@oclif/core', 'chalk', 'inquirer', 'got', '@salesforce/sf-plugins-core']
 
@@ -209,8 +209,6 @@ export default class Migrate extends Command {
       delete pjson.devDependencies![lib]
       log(scope, 'removed', lib)
     }
-
-    pjson.devDependencies!['@salesforce/cli-plugins-testkit'] = '^5.0.0-dev.1'
 
     if (pjson.oclif.commands) {
       pjson.oclif.flexibleTaxonomy = true
