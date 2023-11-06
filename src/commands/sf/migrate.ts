@@ -218,7 +218,7 @@ export default class Migrate extends Command {
     pjson.oclif.topicSeparator = ' '
     log(scope, 'added', 'oclif.topicSeparator')
 
-    pjson.files = [...(pjson.files ?? []), '/oclif.lock']
+    pjson.files = [...new Set([...(pjson.files ?? []), '/oclif.lock'])]
     pjson.engines.node = '>=18.0.0'
 
     if (pjson.author !== 'Salesforce') {
