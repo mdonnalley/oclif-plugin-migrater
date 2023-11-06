@@ -63,7 +63,7 @@ function log(scope: string, action: 'added' | 'removed' | 'updated', ...args: st
 }
 
 export default class Migrate extends Command {
-  private templateDir = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'files')
+  private templateDir = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'files')
   public async run(): Promise<void> {
     const tsConfig = await this.updateTsConfig()
     await this.updatePackageJson(tsConfig)

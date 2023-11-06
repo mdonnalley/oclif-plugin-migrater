@@ -37,7 +37,8 @@
     "/bin",
     "/dist",
     "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
+    "/oclif.manifest.json",
+    "/files"
   ],
   "homepage": "https://github.com/mdonnalley/oclif-plugin-migrater",
   "license": "MIT",

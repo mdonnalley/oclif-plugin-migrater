@@ -60,7 +60,7 @@ function log(scope: string, action: 'added' | 'removed' | 'updated', ...args: st
 }
 
 export default class Migrate extends Command {
-  private templateDir = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'files')
+  private templateDir = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'files')
   public async run(): Promise<void> {
     const tsConfig = await this.updateTsConfig()
     await this.updatePackageJson(tsConfig)
@@ -134,7 +134,7 @@ export default class Migrate extends Command {
     const pjson = await readJSON<Interfaces.PJSON.Plugin>('package.json')
 
     const {stdout: version} = await exec(`npm show ${pjson.name} version --json`)
-    const currentMajor = version.split('.')[0]
+    const currentMajor = Number.parseInt(version.replaceAll('"', '').split('.')[0], 10)
 
     pjson.version = `${currentMajor + 1}.0.0`
     log(scope, 'updated', `version: ${pjson.version}`)
