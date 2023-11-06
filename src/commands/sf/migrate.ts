@@ -5,6 +5,7 @@ import {exec as cpExec} from 'node:child_process'
 import {cp, readFile, readdir, rename, rm, writeFile} from 'node:fs/promises'
 import {dirname, join, resolve} from 'node:path'
 import {fileURLToPath} from 'node:url'
+import replaceInFile from 'replace-in-file'
 
 const exec = async (command: string): Promise<{code: number; stderr: string; stdout: string}> =>
   new Promise((resolve, reject) => {
@@ -68,6 +69,7 @@ export default class Migrate extends Command {
     await this.updateTestStuff()
     await this.updateBinScripts()
     await this.addEslintIgnore()
+    await this.updateMessagesImport()
 
     try {
       await exec('yarn')
@@ -127,6 +129,15 @@ export default class Migrate extends Command {
   private async updateGitIgnore() {
     let gitIgnore = await readFile('.gitignore', 'utf8')
     await writeFile('.gitignore', (gitIgnore += '\noclif.lock\n'))
+  }
+
+  private async updateMessagesImport() {
+    await replaceInFile({
+      files: 'src/commands/**/*.ts',
+      from: 'Messages.importMessagesDirectory(__dirname);',
+      to: "import { dirname } from 'node:path';\nimport { fileURLToPath } from 'node:url';\nMessages.importMessagesDirectory(dirname(fileURLToPath(import.meta.url)));",
+    })
+    log('commands', 'updated', 'Messages.importMessagesDirectory')
   }
 
   private async updatePackageJson(tsConfig: Interfaces.TSConfig): Promise<Interfaces.PJSON.Plugin> {
@@ -264,6 +275,12 @@ export default class Migrate extends Command {
         await rm(join('test', 'helpers'), {force: true, recursive: true})
       }
     } catch {}
+
+    await replaceInFile({
+      files: 'test/**/*.ts',
+      from: '@salesforce/core/lib/testSetup',
+      to: '@salesforce/core/lib/testSetup.js',
+    })
   }
 
   private async updateTsConfig(): Promise<Interfaces.TSConfig> {
