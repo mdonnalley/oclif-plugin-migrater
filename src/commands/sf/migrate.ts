@@ -2,6 +2,7 @@
 import {Command, Interfaces, ux} from '@oclif/core'
 import chalk from 'chalk'
 import {exec as cpExec} from 'node:child_process'
+import {existsSync} from 'node:fs'
 import {cp, readFile, readdir, rename, rm, writeFile} from 'node:fs/promises'
 import {dirname, join, resolve} from 'node:path'
 import {fileURLToPath} from 'node:url'
@@ -77,8 +78,13 @@ export default class Migrate extends Command {
       await exec('yarn install')
     }
 
-    await rename('.lintstagedrc.js', '.lintstagedrc.cjs')
-    await rename('commitlint.config.js', 'commitlint.config.cjs')
+    if (existsSync('.lintstagedrc.js')) {
+      await rename('.lintstagedrc.js', '.lintstagedrc.cjs')
+    }
+
+    if (existsSync('.commitlint.config.js')) {
+      await rename('commitlint.config.js', 'commitlint.config.cjs')
+    }
 
     log('config', 'updated', 'lintstagedrc.js to lintstagedrc.cjs')
     log('config', 'updated', 'commitlint.config.js to commitlint.config.cjs')
@@ -104,7 +110,7 @@ export default class Migrate extends Command {
       action = 'added'
     }
 
-    await writeFile('.eslintignore', (contents += '*.cjs/\n'))
+    await writeFile('.eslintignore', contents.includes('*.cjs/') ? contents : (contents += '*.cjs/\n'))
     log('.eslintignore', action, '*.cjs/')
   }
 
@@ -127,8 +133,17 @@ export default class Migrate extends Command {
   }
 
   private async updateGitIgnore() {
-    let gitIgnore = await readFile('.gitignore', 'utf8')
-    await writeFile('.gitignore', (gitIgnore += '\noclif.lock\n'))
+    const gitIgnore = await readFile('.gitignore', 'utf8')
+    const lines = gitIgnore.split('\n')
+
+    await writeFile(
+      '.gitignore',
+      [
+        ...lines,
+        ...(gitIgnore.includes('oclif.lock') ? [] : ['oclif.lock']),
+        ...(gitIgnore.includes('oclif.manifest.json') ? [] : ['oclif.manifest.json']),
+      ].join('\n'),
+    )
   }
 
   private async updateMessagesImport() {
@@ -169,7 +184,6 @@ export default class Migrate extends Command {
 
     const devLibs = [
       '@oclif/plugin-command-snapshot',
-      '@salesforce/dev-config',
       '@salesforce/dev-scripts',
       'eslint-config-salesforce-typescript',
       'oclif',
@@ -278,8 +292,8 @@ export default class Migrate extends Command {
 
     await replaceInFile({
       files: 'test/**/*.ts',
-      from: '@salesforce/core/lib/testSetup',
-      to: '@salesforce/core/lib/testSetup.js',
+      from: `'@salesforce/core/lib/testSetup'`,
+      to: `'@salesforce/core/lib/testSetup.js'`,
     })
   }
 
