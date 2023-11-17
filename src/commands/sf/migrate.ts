@@ -83,6 +83,10 @@ export default class Migrate extends Command {
     }
 
     if (existsSync('.commitlint.config.js')) {
+      await rename('.commitlint.config.js', 'commitlint.config.cjs')
+    }
+
+    if (existsSync('commitlint.config.js')) {
       await rename('commitlint.config.js', 'commitlint.config.cjs')
     }
 
@@ -159,11 +163,17 @@ export default class Migrate extends Command {
     const scope = 'package.json'
     const pjson = await readJSON<Interfaces.PJSON.Plugin>('package.json')
 
-    const {stdout: version} = await exec(`npm show ${pjson.name} version --json`)
-    const currentMajor = Number.parseInt(version.replaceAll('"', '').split('.')[0], 10)
+    try {
+      const {stdout: version} = await exec(`npm show ${pjson.name} version --json`)
+      const currentMajor = Number.parseInt(version.replaceAll('"', '').split('.')[0], 10)
 
-    pjson.version = `${currentMajor + 1}.0.0`
-    log(scope, 'updated', `version: ${pjson.version}`)
+      pjson.version = `${currentMajor + 1}.0.0`
+      log(scope, 'updated', `version: ${pjson.version}`)
+    } catch {
+      const currentMajor = Number.parseInt(pjson.version.replaceAll('"', '').split('.')[0], 10)
+      pjson.version = `${currentMajor + 1}.0.0`
+      log(scope, 'updated', `version: ${pjson.version}`)
+    }
 
     delete pjson.main
     log(scope, 'removed', 'main')
