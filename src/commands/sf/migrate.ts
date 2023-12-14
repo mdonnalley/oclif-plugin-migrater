@@ -154,7 +154,7 @@ export default class Migrate extends Command {
     await replaceInFile({
       files: 'src/commands/**/*.ts',
       from: 'Messages.importMessagesDirectory(__dirname);',
-      to: "import { dirname } from 'node:path';\nimport { fileURLToPath } from 'node:url';\nMessages.importMessagesDirectory(dirname(fileURLToPath(import.meta.url)));",
+      to: 'Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);',
     })
     log('commands', 'updated', 'Messages.importMessagesDirectory')
   }
